@@ -1,6 +1,7 @@
 import subprocess
 import os
 import pytube
+from core.utils import color
 
 def select_video_streaming(url):
 	yt = pytube.YouTube(url)
@@ -16,11 +17,15 @@ def select_video_streaming(url):
     
 	return vids[lowest]
 
-def download_video(video, base_dir):
-	video.download(os.path.join(base_dir, 'downloads'))
+def download_audio(video, base_dir):
+	color.display_messages('downloading video', info=True)
+	video.download(os.path.join(base_dir))
 	filename = video.default_filename
+	color.display_messages('converting to mp3', info=True)
 	subprocess.call([
-		'ffmpeg', '-i', 
+		'ffmpeg', '-hide_banner', '-loglevel', 'panic', '-i',
 		os.path.join(base_dir, filename), 
 		os.path.join(base_dir, filename[:-3]+'mp3')
 	])
+	os.remove(os.path.join(base_dir, filename))
+	color.display_messages('audio downloaded succesfully', success=True)

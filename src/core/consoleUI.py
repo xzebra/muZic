@@ -30,7 +30,7 @@ class Console(cmd.Cmd):
 
         if args.url:
             video = youtube.select_video_streaming(args.url)
-            youtube.download_video(video, base_url)
+            youtube.download_audio(video, path)
         elif args.id:
             print("wip")
         else:
@@ -43,18 +43,19 @@ class Console(cmd.Cmd):
 
 
     def do_config(self, args):
+        """ edit application's user preferences """
         arg_parser = argparse.ArgumentParser(prog="config", description='config application settings')
         arg_parser.add_argument('-p', dest='path', metavar='<path>', help='sets download path (device to download in)')
         try:
             args = arg_parser.parse_args(shlex.split(args))
         except: return
-
-        # add main section in case it hasn't been created yet
-        if 'main' not in self.config.sections():
-            self.config.add_section('main')
         
         if args.path:
-            
+            # add main section in case it hasn't been created yet
+            if 'main' not in self.config.sections():
+                self.config.add_section('main')
+            self.config.set('main', 'path', args.path)
+            self.config.dump()
         else:
             arg_parser.print_help()
 

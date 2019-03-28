@@ -1,34 +1,21 @@
-import ConfigParser
+import configparser
 import os.path
+import io
 
 CONFIG_NAME = 'config.ini'
 
-class Config:
-    config_file = None
-    config = None
-
+class Config(configparser.ConfigParser):
     def __init__(self):
+        configparser.ConfigParser.__init__(self)
         # create file if doesn't exist
-        self.config_file = open(CONFIG_NAME, 'w+')
-        self.parse()
-        self.config_file.close()
+        if not os.path.isfile(CONFIG_NAME):
+            config_file = open(CONFIG_NAME, 'w+')
+            config_file.close()
+        self.parse()   
 
     def parse(self):
-        if self.config_file is None:
-            # not initialized
-            return # TODO: debug msg
-
-        config_text = self.config_file.read()
-        self.config = ConfigParser.RawConfigParser(allow_no_value=True)
-        self.config.readfp(io.BytesIO(config_text))
-
-    def get(self, section, var):
-        return self.config.get(section, var)
-
-    def set(self, section, var, val):
-        self.config.set(section, var, val)
+        self.read(CONFIG_NAME)
 
     def dump(self):
-        self.config_file = open(CONFIG_NAME, 'w')
-        self.config.write(config_file)
-        self.config_file.close()
+        with open(CONFIG_NAME, 'w') as config_file: 
+            self.write(config_file)

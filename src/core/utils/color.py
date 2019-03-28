@@ -23,14 +23,14 @@ def setcolor(text,color=''):
 
 def linefeed():
     print('\n')
-def display_messages(string,error=False,sucess=False,info=False,sublime=False,without=False):
+def display_messages(string,error=False,success=False,info=False,sublime=False,without=False):
     if sublime:
         if   error:print('\n{}{}[-]{} {}\n===={}\n'.format(colors.RED,colors.BOLD,colors.ENDC,string,len(string)*'='))
-        elif sucess:print('\n{}{}[+]{} {}\n===={}\n'.format(colors.GREEN,colors.BOLD,colors.ENDC,string,len(string)*'='))
+        elif success:print('\n{}{}[+]{} {}\n===={}\n'.format(colors.GREEN,colors.BOLD,colors.ENDC,string,len(string)*'='))
         elif info: print('\n{}{}[*]{} {}\n===={}\n'.format(colors.BLUE,colors.BOLD,colors.ENDC,string,len(string)*'='))
     else:
         if   error:print('{}{}[-]{} {}'.format(colors.RED,colors.BOLD,colors.ENDC,string))
-        elif sucess:print('{}{}[+]{} {}'.format(colors.GREEN,colors.BOLD,colors.ENDC,string))
+        elif success:print('{}{}[+]{} {}'.format(colors.GREEN,colors.BOLD,colors.ENDC,string))
         elif info: print('{}{}[*]{} {}'.format(colors.BLUE,colors.BOLD,colors.ENDC,string))
 
 def banner(v,a):
