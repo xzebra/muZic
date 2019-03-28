@@ -18,9 +18,9 @@ def select_video_streaming(url):
 
 def download_video(video, base_dir):
 	video.download(os.path.join(base_dir, 'downloads'))
-	default_filename = video.default_filename
+	filename = video.default_filename
 	subprocess.call([
 		'ffmpeg', '-i', 
-		os.path.join(base_dir, 'downloads', default_filename), 
-		os.path.join(base_dir, default_filename)
+		os.path.join(base_dir, filename), 
+		os.path.join(base_dir, filename[:-3]+'mp3')
 	])

@@ -5,11 +5,14 @@ from os import system
 from subprocess import check_output
 from core.utils import color
 from core.utils import youtube
+from core.utils import settings
 
 class Console(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
+        self.config = settings.Config()
         self.prompt = color.setcolor(':: ', color='Blue')
+
 
     def do_download(self, args):
         """ download video from youtube and convert to mp3 """
@@ -20,18 +23,43 @@ class Console(cmd.Cmd):
             args = arg_parser.parse_args(shlex.split(args))
         except: return
 
+        path = self.config.get('main', 'path')
+        if len(path) == 0:
+            color.display_messages('you have to configure the download path', error=True)
+            return
+
         if args.url:
             video = youtube.select_video_streaming(args.url)
-            download_video(video, base_url)
+            youtube.download_video(video, base_url)
         elif args.id:
-            print("no")
+            print("wip")
         else:
             arg_parser.print_help()
         
+
     def do_upload(self, args):
         """ moves all downloaded audio files to dir """
+        print("wip")
 
-    def do_help(self,args):
+
+    def do_config(self, args):
+        arg_parser = argparse.ArgumentParser(prog="config", description='config application settings')
+        arg_parser.add_argument('-p', dest='path', metavar='<path>', help='sets download path (device to download in)')
+        try:
+            args = arg_parser.parse_args(shlex.split(args))
+        except: return
+
+        # add main section in case it hasn't been created yet
+        if 'main' not in self.config.sections():
+            self.config.add_section('main')
+        
+        if args.path:
+            
+        else:
+            arg_parser.print_help()
+
+
+    def do_help(self, args):
         """ show this help """
         names = self.get_names()
         cmds_doc = []
@@ -54,17 +82,21 @@ class Console(cmd.Cmd):
             self.stdout.write('    {:<10}	{}\n'.format(command, doc))
         color.linefeed()
 
-    def do_clear(self,args):
+
+    def do_clear(self, args):
         """ clean up the line """
         system('clear')
 
-    def do_update(self,args):
+
+    def do_update(self, args):
         """ find newer versions """
         color.display_messages('checking updates...', info=True)
         color.display_messages(check_output(['git', 'pull']), info=True)
 
+
     def default(self, args):pass
     def emptyline(self):pass
+
 
     def do_exit(self, args):
         """ exit the program."""
