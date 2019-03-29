@@ -28,5 +28,5 @@ def download_audio(video, base_dir):
 		os.path.join(base_dir, filename).replace('&', '"&"'), 
 		os.path.join(base_dir, filename[:-3]+'mp3').replace('&', '"&"')
 	])
-	#os.remove(os.path.join(base_dir, filename))
+	os.remove(os.path.join(base_dir, filename))
 	color.display_messages('audio downloaded succesfully', success=True)

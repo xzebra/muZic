@@ -8,6 +8,7 @@ from core.utils import color, youtube, settings, android
 
 class Console(cmd.Cmd):
     def __init__(self):
+        cmd.Cmd.use_rawinput = False
         cmd.Cmd.__init__(self)
         self.config = settings.Config()
         self.prompt = color.setcolor(':: ', color='Blue')
