@@ -22,10 +22,11 @@ def download_audio(video, base_dir):
 	video.download(os.path.join(base_dir))
 	filename = video.default_filename
 	color.display_messages('converting to mp3', info=True)
+	print(os.path.join(base_dir, filename), os.path.join(base_dir, filename[:-3]+'mp3'))
 	subprocess.call([
 		'ffmpeg', '-hide_banner', '-loglevel', 'panic', '-i',
-		os.path.join(base_dir, filename), 
-		os.path.join(base_dir, filename[:-3]+'mp3')
+		os.path.join(base_dir, filename).replace('&', '"&"'), 
+		os.path.join(base_dir, filename[:-3]+'mp3').replace('&', '"&"')
 	])
-	os.remove(os.path.join(base_dir, filename))
+	#os.remove(os.path.join(base_dir, filename))
 	color.display_messages('audio downloaded succesfully', success=True)

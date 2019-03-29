@@ -1,6 +1,7 @@
 import configparser
 import os.path
 import io
+from core.utils import color
 
 CONFIG_NAME = 'config.ini'
 
@@ -12,6 +13,16 @@ class Config(configparser.ConfigParser):
             config_file = open(CONFIG_NAME, 'w+')
             config_file.close()
         self.parse()   
+
+    def is_set(self, var, section='main'):
+        attrib = self.get(section, var)
+        return attrib is not None and len(attrib) != 0
+    
+    def require(self, var, section='main'):
+        if not self.is_set(var, section):
+            color.display_messages('you have to configure the {}'.format(var), error=True)
+            return False
+        return True
 
     def parse(self):
         self.read(CONFIG_NAME)

@@ -1,11 +1,10 @@
 import argparse
 import cmd
 import shlex
+import os
 from os import system
 from subprocess import check_output
-from core.utils import color
-from core.utils import youtube
-from core.utils import settings
+from core.utils import color, youtube, settings, android
 
 class Console(cmd.Cmd):
     def __init__(self):
@@ -23,10 +22,9 @@ class Console(cmd.Cmd):
             args = arg_parser.parse_args(shlex.split(args))
         except: return
 
-        path = self.config.get('main', 'path')
-        if len(path) == 0:
-            color.display_messages('you have to configure the download path', error=True)
+        if not self.config.require('path'):
             return
+        path = self.config.get('main', 'path')
 
         if args.url:
             video = youtube.select_video_streaming(args.url)
@@ -35,26 +33,37 @@ class Console(cmd.Cmd):
             print("wip")
         else:
             arg_parser.print_help()
-        
 
     def do_upload(self, args):
         """ moves all downloaded audio files to dir """
-        print("wip")
+        if not self.config.require('path') or not self.config.require('dest'):
+            return
+
+        path = self.config.get('main', 'path')
+        dest = self.config.get('main', 'dest')
+
+        for filename in os.listdir(path):
+            android.upload_audio(filename, path, dest)
 
 
     def do_config(self, args):
         """ edit application's user preferences """
-        arg_parser = argparse.ArgumentParser(prog="config", description='config application settings')
-        arg_parser.add_argument('-p', dest='path', metavar='<path>', help='sets download path (device to download in)')
+        arg_parser = argparse.ArgumentParser(prog="config", description='config application settings (only one parameter per config call)')
+        arg_parser.add_argument('-p', dest='path', metavar='<path>', help='sets download path (folder to download in)')
+        arg_parser.add_argument('-d', dest='dest', metavar='<dest>', help='sets destination folder (android filesystem)')
         try:
             args = arg_parser.parse_args(shlex.split(args))
         except: return
-        
-        if args.path:
-            # add main section in case it hasn't been created yet
-            if 'main' not in self.config.sections():
-                self.config.add_section('main')
+
+        # add main section in case it hasn't been created yet
+        if 'main' not in self.config.sections():
+            self.config.add_section('main')
+
+        if args.path: 
             self.config.set('main', 'path', args.path)
+            self.config.dump()
+        elif args.dest:
+            self.config.set('main', 'dest', args.dest)
             self.config.dump()
         else:
             arg_parser.print_help()
