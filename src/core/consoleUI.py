@@ -23,13 +23,12 @@ class Console(cmd.Cmd):
             args = arg_parser.parse_args(shlex.split(args))
         except: return
 
-        if not self.config.require('path'):
+        if not self.config.require_one('path'):
             return
-        path = self.config.get('main', 'path')
 
         if args.url:
             video = youtube.select_video_streaming(args.url)
-            youtube.download_audio(video, path)
+            youtube.download_audio(video, self.config['path'])
         elif args.id:
             print("wip")
         else:
@@ -37,14 +36,12 @@ class Console(cmd.Cmd):
 
     def do_upload(self, args):
         """ moves all downloaded audio files to dir """
-        if not self.config.require('path') or not self.config.require('dest'):
+        if not self.config.require(['path', 'dest']):
             return
 
-        path = self.config.get('main', 'path')
-        dest = self.config.get('main', 'dest')
-
         for filename in os.listdir(path):
-            android.upload_audio(filename, path, dest)
+            android.upload_audio(filename, self.config['path'], self.config['dest'])
+            os.remove(os.path.join(self.config['path'], filename))
 
 
     def do_config(self, args):
@@ -78,7 +75,6 @@ class Console(cmd.Cmd):
         color.display_messages('Available Commands:', info=True, sublime=True)
         for name in names:
             if name[:3] == 'do_':
-                pname = name
                 cmd   = name[3:]
                 if getattr(self, name).__doc__:
                     cmds_doc.append((cmd, getattr(self, name).__doc__))
