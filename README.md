@@ -18,18 +18,40 @@ Download audio from YouTube and store it in the desired path
 ```
 :: config -p ../test
 ```
-This will keep your configuration stored in a .ini file
 
 - Download audio given YouTube url:
 ```
 :: download -l https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 
+- Upload audio files to android device:
+```
+:: upload
+```
+
+## How to install
+
+```
+$ python ./setup.py install
+```
+
 ## Requirements
 
+Python 3 or greater versions
+
+You can get the python libraries listed below by doing
+```
+$ pip install -r < requirements.txt
+```
+
 - Python libraries:
-  - pytube
-  - configparser
+    - pytube
+    - configparser
+    - colorama
   
+ADB is only required if the destination device is an android smartphone,
+otherwise you can set the download folder to drop files on other device.
+
 - Other:
-  - [ffmpeg](https://ffmpeg.org/)
+    - [ffmpeg](https://ffmpeg.org/)
+    - [adb](https://developer.android.com/studio/command-line/adb)
