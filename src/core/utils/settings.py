@@ -1,9 +1,9 @@
 import configparser
 import os.path
 import io
-from core.utils import color
+from src.core.utils import color
 
-CONFIG_NAME = 'config.ini'
+CONFIG_NAME = 'muZic.cfg'
 
 class Config(configparser.ConfigParser):
     def __init__(self):

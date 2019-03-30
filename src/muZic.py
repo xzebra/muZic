@@ -3,8 +3,8 @@ from os import path,mkdir,name
 if name == 'nt': # fix colors in windows
     from colorama import init
     init()
-from core.consoleUI import Console
-from core.utils.color import banner
+from src.core.consoleUI import Console
+from src.core.utils.color import banner
 version = '1.0'
 author  = 'xzebra'
 name='muZic'

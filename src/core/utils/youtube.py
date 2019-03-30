@@ -1,7 +1,7 @@
 import subprocess
 import os
 import pytube
-from core.utils import color
+from src.core.utils import color
 
 def select_video_streaming(url):
 	yt = pytube.YouTube(url)

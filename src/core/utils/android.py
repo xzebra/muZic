@@ -1,6 +1,6 @@
 import os
 import subprocess
-from core.utils import color
+from src.core.utils import color
 
 def upload_audio(filename, path, dest):
 	subprocess.call([

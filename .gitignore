@@ -2,3 +2,6 @@ src/core/__pycache__
 src/core/utils/__pycache__
 src/config.ini
 test/
+dist/
+build/
+muZic.egg-info/

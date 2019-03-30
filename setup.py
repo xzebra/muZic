@@ -13,9 +13,9 @@ setup(name='muZic',
         'src', 'src.*'
     ]),
     install_requires=[
-        'tabulate',
-        'pexpect',
-        'pysqlite',
+        'pytube',
+        'configparser',
+        'colorama',
       ],
     entry_points = {
         'console_scripts': ['muZic=src.muZic:main',],

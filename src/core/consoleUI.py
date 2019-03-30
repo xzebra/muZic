@@ -4,7 +4,7 @@ import shlex
 import os
 from os import system
 from subprocess import check_output
-from core.utils import color, youtube, settings, android
+from src.core.utils import color, youtube, settings, android
 
 class Console(cmd.Cmd):
     def __init__(self):
@@ -75,7 +75,6 @@ class Console(cmd.Cmd):
         names = self.get_names()
         cmds_doc = []
         names.sort()
-        pname = ''
         color.display_messages('Available Commands:', info=True, sublime=True)
         for name in names:
             if name[:3] == 'do_':
