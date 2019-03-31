@@ -18,7 +18,7 @@ class Console(cmd.Cmd):
         """ download video from youtube and convert to mp3 """
         arg_parser = argparse.ArgumentParser(prog="download", description='download audio from youtube')
         arg_parser.add_argument('url', type=str, metavar='[url]', help='youtube url (video or playlist)')
-        arg_parser.add_argument('-pl', '--playlist', type=bool, dest='playlist', metavar='<playlist>', help='download the whole playlist or not')
+        arg_parser.add_argument('--playlist', dest='playlist', default=False, action='store_true', help='download the whole playlist or not')
         try:
             args = arg_parser.parse_args(shlex.split(args))
         except: return
@@ -34,7 +34,7 @@ class Console(cmd.Cmd):
             except IndexError:
                 color.display_messages('url is not a playlist', error=True)
                 return
-                
+
             for video_url in videos:
                 youtube.download_audio(video_url, self.config['path'])
         else:

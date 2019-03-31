@@ -21,7 +21,12 @@ Download audio from YouTube and store it in the desired path
 
 - Download audio given YouTube url:
 ```
-:: download -l https://www.youtube.com/watch?v=dQw4w9WgXcQ
+:: download https://www.youtube.com/watch?v=dQw4w9WgXcQ
+```
+
+- Download playlist given YouTube url:
+```
+:: download https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=PLSM9Rzy5Qpq2YxoLqV0LxW-h3igLGFNx9 --playlist
 ```
 
 - Upload audio files to android device:
