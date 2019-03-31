@@ -17,8 +17,8 @@ class Console(cmd.Cmd):
     def do_download(self, args):
         """ download video from youtube and convert to mp3 """
         arg_parser = argparse.ArgumentParser(prog="download", description='download audio from youtube')
-        arg_parser.add_argument('-l', dest='url', metavar='<url>', help='youtube url (video or playlist)')
-        arg_parser.add_argument('-i', dest='id', metavar='<id>', help='video id')
+        arg_parser.add_argument('url', type=str, metavar='[url]', help='youtube url (video or playlist)')
+        arg_parser.add_argument('-pl', '--playlist', type=bool, dest='playlist', metavar='<playlist>', help='download the whole playlist or not')
         try:
             args = arg_parser.parse_args(shlex.split(args))
         except: return
@@ -26,20 +26,28 @@ class Console(cmd.Cmd):
         if not self.config.require_one('path'):
             return
 
-        if args.url:
-            video = youtube.select_video_streaming(args.url)
-            youtube.download_audio(video, self.config['path'])
-        elif args.id:
-            print("wip")
-        else:
+        if not args.url:
             arg_parser.print_help()
+        elif args.playlist:
+            try:
+                videos = youtube.get_playlist_videos(args.url)
+            except IndexError:
+                color.display_messages('url is not a playlist', error=True)
+                return
+                
+            for video_url in videos:
+                youtube.download_audio(video_url, self.config['path'])
+        else:
+            youtube.download_audio(args.url, self.config['path'])
+            
 
     def do_upload(self, args):
         """ moves all downloaded audio files to dir """
         if not self.config.require(['path', 'dest']):
             return
 
-        for filename in os.listdir(path):
+        files = os.listdir(self.config['path'])
+        for filename in files:
             android.upload_audio(filename, self.config['path'], self.config['dest'])
             os.remove(os.path.join(self.config['path'], filename))
 

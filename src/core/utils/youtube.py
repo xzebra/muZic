@@ -3,30 +3,35 @@ import os
 import pytube
 from src.core.utils import color
 
+def get_playlist_videos(url):
+	pl = pytube.Playlist(url)
+	pl.populate_video_urls()
+	return pl.video_urls
+
 def select_video_streaming(url):
 	yt = pytube.YouTube(url)
+	return yt.streams.filter(subtype='mp4', progressive=True).order_by('resolution').asc().first()
 
-	# list all possible streamings
-	vids = yt.streams.all()
-	# select the lowest res possible
-	lowest = -1
-	for i in range(len(vids)):
-		if vids[i].mime_type == 'video/mp4':
-			if lowest == -1 or str(vids[i].res) < str(vids[lowest].res):
-				lowest = i
-    
-	return vids[lowest]
+def download_video(video_url, base_dir):
+	video = select_video_streaming(video_url)
+	color.display_messages('downloading video - {}'.format(video_url), info=True)
+	video.download(base_dir)
+	return video.default_filename
 
-def download_audio(video, base_dir):
-	color.display_messages('downloading video', info=True)
-	video.download(os.path.join(base_dir))
-	filename = video.default_filename
-	color.display_messages('converting to mp3', info=True)
-	print(os.path.join(base_dir, filename), os.path.join(base_dir, filename[:-3]+'mp3'))
+def mp4_to_mp3(filename, base_dir):
+	color.display_messages('converting to mp3 - {}'.format(filename), info=True)
+
 	subprocess.call([
-		'ffmpeg', '-hide_banner', '-loglevel', 'panic', '-i',
-		os.path.join(base_dir, filename).replace('&', '"&"'), 
-		os.path.join(base_dir, filename[:-3]+'mp3').replace('&', '"&"')
+		'ffmpeg', '-hide_banner', '-loglevel', 'error', '-i',
+		os.path.join(base_dir, filename), 
+		os.path.join(base_dir, filename[:-3]+'mp3')
 	])
-	os.remove(os.path.join(base_dir, filename))
-	color.display_messages('audio downloaded succesfully', success=True)
+
+def download_audio(video_url, base_dir):
+	try:
+		filename = download_video(video_url, base_dir)
+		mp4_to_mp3(filename, base_dir)
+		os.remove(os.path.join(base_dir, filename))
+		color.display_messages('audio downloaded succesfully', success=True)
+	except Exception as e:
+		color.display_messages('{} {}'.format(video_url, str(e)), error=True)
